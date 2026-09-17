@@ -11,6 +11,13 @@ required. All answers come from a fixed knowledge base in the project.
 reference; [knowledge-base.js](knowledge-base.js) is the structured,
 in-browser version of that same content actually used by the chatbot.
 
+[mahjong_technical_reference.md](mahjong_technical_reference.md) is a later,
+more detailed source (American Mahjong Guide / mahjongplaybook.com) treated
+as ground truth for this project. Where it conflicted with the original
+system prompt (dealing pattern, Charleston structure), `knowledge-base.js`
+was corrected to match the technical reference; `mahjong_teacher_system_prompt.md`
+itself was left as the historical original and was not rewritten.
+
 ## Setup
 Static site, no build step or server-side code:
 - [index.html](index.html) — chat UI markup
@@ -27,9 +34,12 @@ Open `index.html` directly in a browser, or serve the folder locally (e.g.
   turned into additional knowledge-base.js sections rather than fabricated —
   hand lists/point values are copyrighted by the NMJL and change annually.
 - Several rules are explicitly flagged as table/set-variant in the content
-  (wall-break counting, East rotation on a win, Charleston/Courtesy pass
-  variations) — presented as the common/default version with a note to
-  confirm against house rules.
+  (East rotation on a win, Courtesy pass specifics) — presented as the
+  common/default version with a note to confirm against house rules.
+- If a future requirement conflicts with a different mahjong ruleset
+  (Chinese Classical, Riichi, etc.), confirm with the user which ruleset
+  applies before implementing — tile counts, dealing, and scoring differ
+  significantly between them.
 - Earlier iterations of this project used a Python CLI calling the Anthropic
   API, then a browser app calling an external LLM API — both were replaced
   with this fully client-side, knowledge-base-only version per requirements.
