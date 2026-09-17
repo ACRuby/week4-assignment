@@ -1,33 +1,29 @@
 # Mahjong Teacher — Week 4 Assignment
 
-A command-line chatbot that teaches complete beginners how to play American
-Mahjong (NMJL style), powered by the Claude API and a custom system prompt.
+A browser-based chatbot that teaches complete beginners how to play American
+Mahjong (NMJL style). It's a static HTML/CSS/JS page with a rule-based
+(keyword-matching) chatbot — no external LLM, no API key, no server required.
 
-## Setup
+## Running it
 
-1. Create a virtual environment and install dependencies:
+Just open `index.html` in a browser, or serve the folder locally:
 
-   ```bash
-   python -m venv .venv
-   .venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+```bash
+python -m http.server 8000
+```
 
-2. Set your Anthropic API key:
-
-   ```bash
-   set ANTHROPIC_API_KEY=your-key-here
-   ```
-
-3. Run the chatbot:
-
-   ```bash
-   python app.py
-   ```
+then visit `http://localhost:8000`.
 
 ## Files
 
+- [index.html](index.html) — chat UI markup
+- [style.css](style.css) — styling
+- [knowledge-base.js](knowledge-base.js) — the chatbot's fixed knowledge:
+  welcome/fallback text plus topic sections (equipment, table setup, seating,
+  dealing, the Charleston, turn structure, picking a hand, winning, house
+  rule variations), each with matching keywords
+- [script.js](script.js) — chat UI logic; scores user input against each
+  knowledge-base section's keywords and replies with the best match (or a
+  fallback message if nothing matches)
 - [mahjong_teacher_system_prompt.md](mahjong_teacher_system_prompt.md) — the
-  full persona/system prompt for the Mahjong teacher.
-- [app.py](app.py) — CLI chat loop that streams responses from Claude using
-  the system prompt above.
+  original persona write-up that `knowledge-base.js` content is based on
