@@ -25,8 +25,9 @@ function findBestMatch(userText) {
   for (const section of KNOWLEDGE_BASE) {
     let score = 0;
     for (const keyword of section.keywords) {
-      if (normalized.includes(keyword)) {
-        score += keyword.split(" ").length; // multi-word keyword matches count more
+      const normalizedKeyword = normalize(keyword).trim();
+      if (normalizedKeyword && normalized.includes(normalizedKeyword)) {
+        score += normalizedKeyword.split(/\s+/).length; // multi-word keyword matches count more
       }
     }
     if (score > bestScore) {

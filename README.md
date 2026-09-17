@@ -19,13 +19,14 @@ then visit `http://localhost:8000`.
 - [index.html](index.html) — chat UI markup
 - [style.css](style.css) — styling
 - [knowledge-base.js](knowledge-base.js) — the chatbot's fixed knowledge:
-  welcome/fallback text plus topic sections (equipment, table setup, seating,
-  dealing, the Charleston, turn structure, jokers, picking a hand, the NMJL
-  card's structure, scoring, winning, house rule variations), each with
-  matching keywords
+  welcome/fallback text plus ~40 narrow, single-question Q&A entries grouped
+  by topic (equipment, table setup, seating, dealing, the Charleston, turn
+  structure, jokers, picking a hand, the NMJL card's structure, scoring,
+  winning, house rule variations), each with matching keywords
 - [script.js](script.js) — chat UI logic; scores user input against each
-  knowledge-base section's keywords and replies with the best match (or a
-  fallback message if nothing matches)
+  entry's keywords (multi-word phrases score higher, so a specific question
+  beats a generic one) and replies with just that entry's answer, or a
+  fallback message if nothing matches
 - [mahjong_teacher_system_prompt.md](mahjong_teacher_system_prompt.md) — the
   original persona write-up that `knowledge-base.js` content is based on
 - [mahjong_technical_reference.md](mahjong_technical_reference.md) — a more
