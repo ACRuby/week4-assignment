@@ -19,10 +19,11 @@ then visit `http://localhost:8000`.
 - [index.html](index.html) — chat UI markup
 - [style.css](style.css) — styling
 - [knowledge-base.js](knowledge-base.js) — the chatbot's fixed knowledge:
-  welcome/fallback text plus ~40 narrow, single-question Q&A entries grouped
-  by topic (equipment, table setup, seating, dealing, the Charleston, turn
-  structure, jokers, picking a hand, the NMJL card's structure, scoring,
-  winning, house rule variations), each with matching keywords
+  welcome/fallback text plus ~90 narrow, single-question Q&A entries grouped
+  by topic (basics, tiles, table setup, seating & East, dealing, the
+  Charleston, turns & claiming, exposures, jokers, dead hands, picking a
+  hand, the NMJL card's structure, winning, scoring, strategy, etiquette,
+  house-rule variations), each with matching keywords
 - [script.js](script.js) — chat UI logic; scores user input against each
   entry's keywords (multi-word phrases score higher, so a specific question
   beats a generic one) and replies with just that entry's answer, or a
@@ -32,3 +33,6 @@ then visit `http://localhost:8000`.
 - [mahjong_technical_reference.md](mahjong_technical_reference.md) — a more
   detailed rules source used as ground truth to correct/extend the knowledge
   base (dealing pattern, Charleston structure, jokers, scoring, card layout)
+
+See [CLAUDE.md](CLAUDE.md) for how a later 500-question NMJL dataset was
+used to further correct and expand `knowledge-base.js`.
