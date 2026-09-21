@@ -9,11 +9,14 @@ written into this repo.
 
 ## Try it (30 seconds)
 
-Just open [index.html](index.html) directly in a browser — double-click the
-file, or drag it into a browser tab. No install, no build step, no server
-required.
+**Live demo: https://acruby.github.io/week4-assignment/**
 
-If you'd rather serve it locally:
+Prefer to run it locally? Download or clone the repo and open `index.html`
+directly in a browser (double-click the file, or drag it into a browser
+tab). No install, no build step, no server required. (Note: clicking
+`index.html` inside GitHub only shows the source code, not the running app.)
+
+Or serve it locally:
 
 ```bash
 python -m http.server 8000
