@@ -218,7 +218,7 @@ const KNOWLEDGE_BASE = [
   {
     id: "charleston-definition",
     title: "What Is the Charleston?",
-    keywords: ["what is the charleston"],
+    keywords: ["what is the charleston", "charleston"],
     content: "The opening tile-passing sequence used in American Mah Jongg. Players pass " +
       "groups of three unwanted tiles in prescribed directions before normal play begins."
   },
@@ -231,7 +231,7 @@ const KNOWLEDGE_BASE = [
   {
     id: "charleston-first",
     title: "The First Charleston",
-    keywords: ["first charleston", "charleston"],
+    keywords: ["first charleston"],
     content: "Mandatory once it begins: three passes — right, then across, then left."
   },
   {
@@ -331,7 +331,7 @@ const KNOWLEDGE_BASE = [
   {
     id: "turn-claiming",
     title: "Claiming a Discard",
-    keywords: ["claim", "claiming", "call a tile", "pung", "kong"],
+    keywords: ["claim", "claiming", "call a tile"],
     content: "Any player can claim a discarded tile — not just the player to their right — " +
       "by calling it (\"Call\" or \"Take,\" or naming the tile) to complete an exposed pung " +
       "(3 of a kind), kong (4 of a kind), quint (5 of a kind), or sextet (6 of a kind, both " +
@@ -475,7 +475,7 @@ const KNOWLEDGE_BASE = [
   {
     id: "dead-hand-definition",
     title: "What Is a Dead Hand?",
-    keywords: ["what is a dead hand", "dead hand"],
+    keywords: ["what is a dead hand", "dead hand", "hand dies", "hand died"],
     content: "A hand is dead when a rules error or an impossible exposure means the player " +
       "can no longer legally complete a hand. A dead player stops picking and discarding " +
       "but keeps their tiles in place."
@@ -522,7 +522,7 @@ const KNOWLEDGE_BASE = [
   {
     id: "pick-how-many-candidates",
     title: "How Many Candidate Hands to Consider",
-    keywords: ["how many candidate", "how many hands should i", "narrow down"],
+    keywords: ["how many candidate", "how many hands should i consider", "narrow down"],
     content: "Narrow to 2-3 candidate hands early rather than committing to just one — " +
       "flexibility lets you adapt as more tiles are seen. Once one is clearly closest to " +
       "complete, narrow down to that single target hand."

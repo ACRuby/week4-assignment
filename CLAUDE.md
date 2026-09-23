@@ -45,11 +45,30 @@ Static site, no build step or server-side code:
 - [style.css](style.css) — styling
 - [knowledge-base.js](knowledge-base.js) — ~90 single-question Q&A entries +
   keywords + welcome/fallback text
-- [script.js](script.js) — keyword-matching logic that picks the best-matching
-  knowledge-base section for each user message
+- [script.js](script.js) — tokenized, stemmed keyword-matching logic that
+  picks the best-matching knowledge-base entry for each user message (see
+  "Matching design" below)
 
 Open `index.html` directly in a browser, or serve the folder locally (e.g.
 `python -m http.server`) and visit it. No API key or dependencies needed.
+
+## Matching design
+Originally `script.js` matched user input against keywords by exact
+substring, which required near-exact phrasing. It now tokenizes and stems
+both the input and each keyword (plurals/verb endings fold together:
+"jokers" ~ "joker", "announcing" ~ "announce"), and scores order-independent
+word overlap, not just exact substrings — so paraphrased, reordered, or
+partially-worded questions still match. Per entry, the *best single keyword*
+is used (not the sum across keywords), which prevents an entry with many
+loosely related keywords from out-scoring a precisely matching one. Two
+test sweeps back this: a hand-picked set of paraphrased/reordered queries,
+and a self-consistency check that every keyword of every entry (all 93
+entries, 265 keywords) correctly retrieves its own entry.
+
+Interrogatives (who/what/when/where/why/how) are deliberately NOT stopwords
+— they're often the only thing distinguishing similar questions ("who is
+East" vs "how is East decided"), so stripping them collapsed too many
+entries onto the same single leftover word.
 
 ## Notes
 - If an NMJL card (current year's hand list) is ever added, it should be
