@@ -2,30 +2,24 @@
 
 A friendly chatbot that teaches complete beginners how to play American
 Mahjong (NMJL style) — setup, the Charleston, turns, jokers, winning, and
-more. Built as a static HTML/CSS/JS page with a **rule-based
-(keyword-matching) chatbot**: no external LLM, no API key, no server, no
-network calls at all. Every answer comes from a fixed knowledge base
-written into this repo.
+more.
 
-## Try it (30 seconds)
+**This branch (`claude-llm-chat`) calls the real Claude API**, grounded in
+this project's own knowledge base as its system prompt. The `main` and
+`flexible-matching` branches instead use a fully client-side, rule-based
+(keyword-matching) chatbot with no external LLM at all — see their READMEs
+for that version. Both read from the same [knowledge-base.js](knowledge-base.js).
 
-**Live demo (main): https://acruby.github.io/week4-assignment/**
+## Try it
 
-**Testing the `flexible-matching` branch:** GitHub Pages only serves `main`,
-so this branch isn't at the URL above yet. To try its in-progress changes
-before they're merged, use a raw-file proxy that runs the branch's actual
-JS (unlike clicking the file on GitHub, which just shows source):
-**https://raw.githack.com/ACRuby/week4-assignment/flexible-matching/index.html**
+This branch isn't deployed to GitHub Pages (that serves `main`). To test it:
+
+**https://raw.githack.com/ACRuby/week4-assignment/claude-llm-chat/index.html**
 (first visit shows a one-time "external content" notice from the proxy —
-click through it). This link always reflects the latest push to that
-branch; it's for testing only, not a permanent link.
+click through it; this link always reflects the latest push to this branch)
 
-Prefer to run it locally? Download or clone the repo and open `index.html`
-directly in a browser (double-click the file, or drag it into a browser
-tab). No install, no build step, no server required. (Note: clicking
-`index.html` inside GitHub only shows the source code, not the running app.)
-
-Or serve it locally:
+Or download/clone the repo and open `index.html` directly in a browser, or
+serve it locally:
 
 ```bash
 python -m http.server 8000
@@ -33,75 +27,87 @@ python -m http.server 8000
 
 then visit `http://localhost:8000`.
 
+**You'll need your own Anthropic API key** (get one at
+[console.anthropic.com](https://console.anthropic.com)) — paste it into the
+field at the top of the page. It's stored only in your browser's local
+storage, sent only to `api.anthropic.com`, and never touches this repo.
+Using the Claude API costs money per request (pay-as-you-go, sometimes with
+free starter credit) — this is separate from any claude.ai subscription.
+
 ### Example questions to try
 
 - "How many players do I need?"
 - "What's the Courtesy pass?"
 - "Can jokers complete a pair?"
-- "What is a quint?"
-- "Is the second Charleston required?"
-- "Who pays when someone wins?"
-- "What is a dead hand?"
-- "What does C mean on the NMJL card?"
-- A paraphrased or reordered version of any of the above, e.g. "tell me
-  about pungs" or "is it possible for a joker to complete a pair" — on the
-  `flexible-matching` branch these should still match
-- Something off-topic, like "what's the weather today?" — to see the
-  fallback message (it should admit it doesn't know, not make something up)
-
-Type `topics` any time to see the full list of subjects the bot covers.
+- Something phrased loosely, e.g. "tell me about pungs" — the model reads
+  naturally, so this isn't testing exact-match logic the way it would on
+  the rule-based branches
+- Something outside the knowledge base, like "what are this year's actual
+  hand patterns?" — it should say it doesn't have that (rather than invent
+  one), since the current-year NMJL card isn't included
+- Something totally off-topic, like "what's the weather today?" — it
+  should decline rather than answer from its own general knowledge
 
 ## How it works
 
-There's no AI model behind this — it's intentionally a closed, rule-based
-system:
+1. [knowledge-base.js](knowledge-base.js) holds ~90 single-question Q&A
+   entries — the same file the rule-based branches use, but here it's read
+   once at page load and turned into a big system-prompt string (title +
+   answer for every entry) instead of being matched against.
+2. [claude-chat.js](claude-chat.js) sends that system prompt plus the
+   running conversation to `POST https://api.anthropic.com/v1/messages`
+   (model `claude-sonnet-5`) directly from the browser via `fetch`, and
+   shows Claude's reply.
+3. [index.html](index.html) / [style.css](style.css) are the chat UI shell,
+   plus a password-style field for the API key.
 
-1. [knowledge-base.js](knowledge-base.js) holds ~90 entries. Each answers
-   **one specific question** (not a whole topic dump), with a title,
-   a short answer, and a list of keyword phrases that should trigger it.
-2. [script.js](script.js) tokenizes and stems whatever the user types
-   (plurals/verb endings fold together, word order doesn't matter) and
-   scores it against every entry's keywords, weighting rare/specific words
-   ("pung") far more than common ones shared by many entries ("what",
-   "card") — see `CLAUDE.md` for the full design. This is what lets
-   paraphrased or reordered questions still match without exact phrasing.
-   The highest-scoring entry's answer is shown; if nothing scores high
-   enough, the bot says so honestly instead of guessing.
-3. [index.html](index.html) / [style.css](style.css) are just the chat UI
-   shell around that logic.
+Because the system prompt explicitly says to answer only from the supplied
+material and admit when something isn't covered, this should behave a lot
+like the rule-based version in terms of scope — but it's Claude actually
+reading and reasoning over the material, not a keyword matcher, so phrasing
+can be much more natural and multi-turn follow-ups work properly.
 
-This design means the bot can never hallucinate a Mah Jongg rule it wasn't
-explicitly given — every sentence it can say is traceable to a specific
-line in `knowledge-base.js`.
+## A note on the API key
+
+This is a static site with no backend, so there's no way to keep an API key
+private from the browser it's used in — the `anthropic-dangerous-direct-
+browser-access` header is required to call the API from a page at all,
+specifically because Anthropic considers a browser-exposed key unsafe by
+default. That's an acceptable trade-off for a single person testing with
+their own key in their own browser, but this pattern should never be used
+for a page serving other people — anyone visiting could read the key out of
+their browser's network tab. A real product would need a small backend to
+hold the key and proxy requests.
 
 ## Project structure
 
 | File | Purpose |
 |---|---|
-| [index.html](index.html) | Chat UI markup |
+| [index.html](index.html) | Chat UI markup + API key input bar |
 | [style.css](style.css) | Styling |
-| [knowledge-base.js](knowledge-base.js) | The chatbot's entire knowledge: ~90 single-question Q&A entries + keywords, grouped by topic (basics, tiles, table setup, seating & East, dealing, the Charleston, turns & claiming, exposures, jokers, dead hands, picking a hand, the NMJL card's structure, winning, scoring, strategy, etiquette, house-rule variations) |
-| [script.js](script.js) | Keyword-matching logic described above |
+| [knowledge-base.js](knowledge-base.js) | ~90 single-question Q&A entries, read at load time to build the system prompt |
+| [claude-chat.js](claude-chat.js) | Builds the system prompt and calls the Claude API |
+| [script.js](script.js) | The rule-based matcher from `main`/`flexible-matching` — present for reference, not loaded by `index.html` on this branch |
 | [mahjong_teacher_system_prompt.md](mahjong_teacher_system_prompt.md) | Original persona write-up the project started from |
 | [mahjong_technical_reference.md](mahjong_technical_reference.md) | A more detailed rules source used to correct/extend the original content |
-| [CLAUDE.md](CLAUDE.md) | Dev-facing notes: source precedence between the reference docs, and a log of factual corrections made along the way |
+| [CLAUDE.md](CLAUDE.md) | Dev-facing notes: source precedence between the reference docs, the LLM design, and a log of corrections made along the way |
 
 ## Scope & limitations
 
 - **No current-year hand list.** The NMJL card changes every year and its
   specific hand patterns are copyrighted by the National Mah Jongg League,
-  so this bot deliberately does not invent them — it teaches the *general
-  structure* of how the card is organized (sections, "X"/"C" markers,
-  point values) rather than specific patterns.
+  so the system prompt tells Claude not to invent them — only to teach the
+  *general structure* of how the card is organized.
 - **Answers are NMJL-standard by default.** If you mention a house rule,
-  the bot is built to treat it as a table-specific variation, not present
-  it as the official rule.
-- **It only knows what's written into `knowledge-base.js`.** It's not a
-  general chatbot — ask it something outside Mahjong and it will say so
-  rather than answer from general knowledge.
-- A couple of rules genuinely vary by table/set (e.g. whether a winning
-  East stays East, some Courtesy-pass details) — the bot flags these as
-  variable rather than stating one version as universal.
+  Claude is instructed to treat it as a table-specific variation, not
+  present it as the official rule.
+- **Grounded, not unrestricted.** The system prompt asks Claude to answer
+  only from the supplied material and stay on-topic — but unlike the
+  rule-based branches, this can't be mechanically guaranteed the way a
+  keyword lookup can. Claude could still occasionally answer from its own
+  general knowledge despite the instruction.
+- **Costs money and requires an API key**, unlike `main`/`flexible-matching`
+  which need neither.
 
 ## Sources
 

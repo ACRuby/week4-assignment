@@ -3,9 +3,16 @@
 ## Overview
 A friendly, patient American Mahjong (NMJL) teacher chatbot that walks
 complete beginners through setup, mechanics, and strategy one topic at a
-time. Implemented as a static HTML/CSS/JS page with a rule-based
-(keyword-matching) chatbot — no external LLM or API calls, no API key
-required. All answers come from a fixed knowledge base in the project.
+time.
+
+**This branch (`claude-llm-chat`)** calls the real Claude API instead of the
+rule-based matcher used on `main`/`flexible-matching` — see "LLM design"
+below. `main` and `flexible-matching` are a static HTML/CSS/JS page with a
+rule-based (keyword-matching) chatbot: no external LLM or API calls, no API
+key required, all answers from a fixed knowledge base in the project. The
+rest of this Overview describes that shared content/history; it still
+applies here since this branch's system prompt is built from the same
+`knowledge-base.js`.
 
 `mahjong_teacher_system_prompt.md` is kept as the original persona/content
 reference; [knowledge-base.js](knowledge-base.js) is the structured,
@@ -39,20 +46,61 @@ with the standard NMJL rule, and if a user describes a house rule, label it
 as a table-specific variation rather than presenting it as the NMJL default
 (see `var-house-rules-default` and `var-table-variance` in knowledge-base.js).
 
-## Setup
-Static site, no build step or server-side code:
-- [index.html](index.html) — chat UI markup
+## Setup (this branch)
+Static site, no build step or server-side code, but a real API call:
+- [index.html](index.html) — chat UI markup + API key input bar
 - [style.css](style.css) — styling
-- [knowledge-base.js](knowledge-base.js) — ~90 single-question Q&A entries +
-  keywords + welcome/fallback text
-- [script.js](script.js) — tokenized, stemmed keyword-matching logic that
-  picks the best-matching knowledge-base entry for each user message (see
-  "Matching design" below)
+- [knowledge-base.js](knowledge-base.js) — ~90 single-question Q&A entries;
+  on this branch these are read once at load to build the Claude system
+  prompt (see "LLM design"), not matched against directly
+- [claude-chat.js](claude-chat.js) — builds the system prompt from
+  `KNOWLEDGE_BASE`, then calls the Claude API directly from the browser
 
 Open `index.html` directly in a browser, or serve the folder locally (e.g.
-`python -m http.server`) and visit it. No API key or dependencies needed.
+`python -m http.server`). Requires the user to supply their own Anthropic
+API key in the browser (see "LLM design" — there's no backend to hold one
+server-side). `main`/`flexible-matching` need neither a key nor network
+access; [script.js](script.js) from those branches is not used here but is
+left in the repo for reference/comparison.
 
-## Matching design
+## LLM design
+This branch swaps the rule-based matcher for a real call to Claude
+(`claude-sonnet-5`) via `POST https://api.anthropic.com/v1/messages`,
+made directly from the browser with `fetch`.
+
+- **Grounding.** `claude-chat.js` builds the system prompt at load time by
+  concatenating every `KNOWLEDGE_BASE` entry's title + content from
+  `knowledge-base.js` (~16.5k chars, 93 entries) under a short instruction
+  to answer only from that material, say so plainly when something (like
+  the current year's specific hand list) isn't covered, and label
+  user-described house rules as variations rather than the NMJL default.
+  This keeps a single source of truth between the rule-based and LLM
+  branches and preserves the "don't invent hand patterns" behavior that
+  was a deliberate design goal from the start of this project.
+- **API key.** There's no backend, so a key can't be hidden — the user
+  pastes their own Anthropic key into a password-style field; it's kept
+  only in that browser's `localStorage` (key: `mahjong-teacher-anthropic-key`)
+  and sent only to `api.anthropic.com`. It is never written to any file in
+  this repo. Calling the API from a browser at all requires opting in via
+  the `anthropic-dangerous-direct-browser-access: true` header — without it
+  the Anthropic API blocks the request with a CORS error, since a
+  browser-visible key is normally considered unsafe. That's an acceptable
+  trade-off here only because it's the user's own key, entered by them, for
+  their own use — this pattern should not be used for anything serving
+  other people's traffic (their key would be visible to every visitor via
+  browser devtools).
+- **Conversation state.** A simple in-memory array of `{role, content}`
+  turns, sent in full on every request (no server session, no persistence
+  across a page reload).
+- **Verified without a real key:** syntax, the generated system prompt's
+  shape/length, the empty-key guard message, the localStorage save/reload
+  round-trip, and that a bad key produces a real 401 from the API (proving
+  the browser-access header correctly avoids a CORS block) with a friendly
+  error message rather than a raw stack trace. Actually exercising a real
+  conversation needs the user's own key — Claude does not enter API keys
+  into fields, even test ones, per its own operating rules.
+
+## Matching design (main / flexible-matching branches — not used here)
 Originally `script.js` matched user input against keywords by exact
 substring, which required near-exact phrasing. It now tokenizes and stems
 both the input and each keyword (plurals/verb endings fold together:

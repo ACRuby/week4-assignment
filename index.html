@@ -10,8 +10,20 @@
   <div class="app">
     <header>
       <h1>Mahjong Teacher</h1>
-      <p>American Mahjong (NMJL) basics — answers come only from a fixed knowledge base, no external AI.</p>
+      <p>American Mahjong (NMJL) basics — powered by Claude, grounded in this project's own knowledge base.</p>
     </header>
+
+    <div id="api-key-bar">
+      <label for="api-key-input">Anthropic API key</label>
+      <input id="api-key-input" type="password" placeholder="sk-ant-..." autocomplete="off" />
+      <span id="api-key-status"></span>
+    </div>
+    <p id="api-key-note">
+      Stored only in this browser's local storage — never sent anywhere but
+      api.anthropic.com, and never committed to this repo. Clear it any time by
+      emptying the field.
+    </p>
+
     <div id="chat-log"></div>
     <form id="chat-form">
       <input id="chat-input" type="text" placeholder="Ask about setup, the Charleston, turns, winning..." autocomplete="off" />
@@ -20,6 +32,6 @@
   </div>
 
   <script src="knowledge-base.js"></script>
-  <script src="script.js"></script>
+  <script src="claude-chat.js"></script>
 </body>
 </html>

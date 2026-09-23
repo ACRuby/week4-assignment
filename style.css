@@ -54,6 +54,43 @@ header p {
   opacity: 0.9;
 }
 
+#api-key-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bot-bubble);
+}
+
+#api-key-bar label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#api-key-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  min-width: 0;
+}
+
+#api-key-status {
+  font-size: 0.75rem;
+  color: var(--accent-dark);
+  min-width: 40px;
+}
+
+#api-key-note {
+  margin: 6px 20px;
+  font-size: 0.72rem;
+  color: var(--text);
+  opacity: 0.65;
+}
+
 #chat-log {
   flex: 1;
   overflow-y: auto;
