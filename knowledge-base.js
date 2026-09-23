@@ -225,7 +225,7 @@ const KNOWLEDGE_BASE = [
   {
     id: "charleston-tile-count",
     title: "How Many Tiles Are Passed at a Time?",
-    keywords: ["tiles are passed at a time", "how many tiles passed"],
+    keywords: ["how many tiles passed"],
     content: "Three tiles are passed at a time."
   },
   {
@@ -490,7 +490,7 @@ const KNOWLEDGE_BASE = [
   {
     id: "dead-hand-concealed-exposure",
     title: "What If I Expose Part of a Concealed Hand?",
-    keywords: ["expose part of a concealed hand"],
+    keywords: ["expose part of a concealed hand", "concealed hand"],
     content: "Your hand becomes dead, unless the only tile you called was the final tile " +
       "used to declare Mah Jongg."
   },
@@ -539,14 +539,14 @@ const KNOWLEDGE_BASE = [
   {
     id: "strategy-when-to-expose",
     title: "Should I Expose as Soon as I Can?",
-    keywords: ["expose as soon as i can", "should i expose"],
+    keywords: ["expose as soon as i can", "should i expose right away"],
     content: "Not always — exposing can advance your hand, but it also reveals information " +
       "and may lock you into fewer options. Make sure the exposure fits a viable hand first."
   },
   {
     id: "strategy-jokers-value",
     title: "Are Jokers Always Good to Keep?",
-    keywords: ["always good to keep", "jokers always good"],
+    keywords: ["always good to keep", "jokers always good", "keep jokers"],
     content: "Generally valuable, since they can substitute in groups of three or more, but " +
       "their usefulness depends on the hand you're building."
   },
@@ -621,7 +621,7 @@ const KNOWLEDGE_BASE = [
   {
     id: "card-consecutive-run",
     title: "What Does \"Consecutive Run\" Mean?",
-    keywords: ["consecutive run"],
+    keywords: ["consecutive run", "consecutive numbers"],
     content: "Numbers that follow one another in sequence, such as 3-4-5, arranged exactly " +
       "as the hand on the card requires."
   },

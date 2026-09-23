@@ -60,15 +60,32 @@ both the input and each keyword (plurals/verb endings fold together:
 word overlap, not just exact substrings — so paraphrased, reordered, or
 partially-worded questions still match. Per entry, the *best single keyword*
 is used (not the sum across keywords), which prevents an entry with many
-loosely related keywords from out-scoring a precisely matching one. Two
-test sweeps back this: a hand-picked set of paraphrased/reordered queries,
-and a self-consistency check that every keyword of every entry (all 93
-entries, 265 keywords) correctly retrieves its own entry.
+loosely related keywords from out-scoring a precisely matching one.
 
 Interrogatives (who/what/when/where/why/how) are deliberately NOT stopwords
 — they're often the only thing distinguishing similar questions ("who is
 East" vs "how is East decided"), so stripping them collapsed too many
 entries onto the same single leftover word.
+
+**Rarity weighting.** Each word is weighted by how many entries' keyword
+lists it appears in (an IDF-style score): a word unique to one entry
+("pung", "quint") carries a lot of signal on its own, while a word shared
+by dozens of "what is X" keywords ("what", "card") barely counts. This is
+what lets a lone mention of "pung" match `exposure-pung`, while a genuinely
+off-topic message that happens to share only a common word with some
+keyword does not clear the match threshold. `GENERIC_WORDS` is a small
+curated exception list (need, game, name, play, like, ...) for ordinary
+English words that happen to be rare *within this KB* purely by accident of
+phrasing — without it, e.g. "do you like pizza" would falsely match
+`card-like-numbers` (the only keyword containing "like"). These words can
+still complete a full keyword match, just not carry a weak partial one
+alone. Extend this list if a new false positive of the same shape turns up.
+
+Verified with three test sweeps (run from a throwaway `_test_kb.js`, not
+checked in): ~50 hand-picked paraphrased/reordered/off-topic queries, an
+extended batch of tricky off-topic phrasings, and a self-consistency check
+that every keyword of every entry (93 entries, 267 keywords) correctly
+retrieves its own entry.
 
 ## Notes
 - If an NMJL card (current year's hand list) is ever added, it should be
