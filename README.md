@@ -9,7 +9,16 @@ written into this repo.
 
 ## Try it (30 seconds)
 
-**Live demo: https://acruby.github.io/week4-assignment/**
+**Live demo (main): https://acruby.github.io/week4-assignment/**
+
+**Testing the `flexible-matching` branch:** GitHub Pages only serves `main`,
+so this branch isn't at the URL above yet. To try its in-progress changes
+before they're merged, use a raw-file proxy that runs the branch's actual
+JS (unlike clicking the file on GitHub, which just shows source):
+**https://raw.githack.com/ACRuby/week4-assignment/flexible-matching/index.html**
+(first visit shows a one-time "external content" notice from the proxy —
+click through it). This link always reflects the latest push to that
+branch; it's for testing only, not a permanent link.
 
 Prefer to run it locally? Download or clone the repo and open `index.html`
 directly in a browser (double-click the file, or drag it into a browser
@@ -34,6 +43,9 @@ then visit `http://localhost:8000`.
 - "Who pays when someone wins?"
 - "What is a dead hand?"
 - "What does C mean on the NMJL card?"
+- A paraphrased or reordered version of any of the above, e.g. "tell me
+  about pungs" or "is it possible for a joker to complete a pair" — on the
+  `flexible-matching` branch these should still match
 - Something off-topic, like "what's the weather today?" — to see the
   fallback message (it should admit it doesn't know, not make something up)
 
@@ -47,12 +59,14 @@ system:
 1. [knowledge-base.js](knowledge-base.js) holds ~90 entries. Each answers
    **one specific question** (not a whole topic dump), with a title,
    a short answer, and a list of keyword phrases that should trigger it.
-2. [script.js](script.js) takes whatever the user types, strips
-   punctuation, and scores it against every entry's keywords. Multi-word
-   phrases score higher than single generic words, so a specific question
-   ("can jokers complete a pair?") beats a broad one ("jokers") when both
-   are present. The highest-scoring entry's answer is shown; if nothing
-   scores above zero, the bot says so honestly instead of guessing.
+2. [script.js](script.js) tokenizes and stems whatever the user types
+   (plurals/verb endings fold together, word order doesn't matter) and
+   scores it against every entry's keywords, weighting rare/specific words
+   ("pung") far more than common ones shared by many entries ("what",
+   "card") — see `CLAUDE.md` for the full design. This is what lets
+   paraphrased or reordered questions still match without exact phrasing.
+   The highest-scoring entry's answer is shown; if nothing scores high
+   enough, the bot says so honestly instead of guessing.
 3. [index.html](index.html) / [style.css](style.css) are just the chat UI
    shell around that logic.
 
